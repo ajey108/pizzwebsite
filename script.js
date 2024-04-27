@@ -80,7 +80,7 @@ let cart_items = [
 
 ]
 
-let basket = [];
+let basket = JSON.parse(localStorage.getItem("data")) || [];
 
 
 let cartfun = () => {
@@ -90,6 +90,8 @@ let cartfun = () => {
   return (menudiv.innerHTML = cart_items.map((items) => {
 
     let { id, name, Price, desc, img } = items;
+    
+    let search = basket.find((x)=> x.id === id) || [];
 
     return `<div id=product-id-${id} class="box">
       <div class="box-img">
@@ -104,9 +106,9 @@ let cartfun = () => {
      
       <i class='bx bx-cart-alt'></i>
 
-      <button onclick="incr('${id}')" id="incr-${id}"><i class="ri-add-line"></i></button>
-      <div id="quantity-${id}" class="quantity">0</div>
-      <button onclick="decr('${id}')" id="decr-${id}"><i class="ri-subtract-line"></i></button>
+      <button onclick="incr('${id}')" ><i class="ri-add-line"></i></button>
+      <div id=${id} class="quantity">${search.item === undefined ? 0: search.item}</div>
+      <button onclick="decr('${id}')" ><i class="ri-subtract-line"></i></button>
       
       
   </div>`
@@ -146,6 +148,12 @@ let incr =(id)=> {
     search.item += 1;
   }
 
+  //local storage
+
+  localStorage.setItem("data",JSON.stringify(basket));
+
+
+
   update(id);
   
   
@@ -165,16 +173,16 @@ let decr = (id)=> {
 
   let search = basket.find((x)=>x.id === id);
 
-  console.log('Found item:', x);
+  if (search ===  undefined) return;
 
-  if(search.item === 0) return;
+  else if(search.item === 0) return;
 
   else{
     search.item -= 1;
 
-    console.log('Decrement function called with id:', id);
-
-    update();
+  
+    localStorage.setItem("data",JSON.stringify(basket));
+    update(id);
 
     
   }
@@ -195,9 +203,23 @@ console.log(search.item);
 
 document.getElementById(id).innerHTML = search.item;
 
+claculation()
+
  
+ };
+
+
+ let claculation =()=>{
+
+  let carticon = document.getElementById("carticon");
+
+  carticon.innerHTML=basket.map((x)=>x.item).reduce((x,y)=>x+y,0)
+
+  
  }
 
+
+ claculation();
 
 
 
