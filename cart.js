@@ -44,7 +44,7 @@ let generateCartitems = () => {
 
       </h4>
 
-      <i class="ri-close-large-line"></i>
+      <i onclick = "dlt_item(${id})" class="ri-close-large-line"></i>
 
 
       </div>
@@ -52,7 +52,7 @@ let generateCartitems = () => {
       <div id=${id} class="quantity">${item}</div>
       <button onclick="decr('${id}')" ><i class="ri-subtract-line"></i></button>
       
-      <h3> </h3>
+      <h3> ${item * search.Price}</h3>
       
       </div>
 
@@ -79,89 +79,159 @@ generateCartitems();
 
 //increase quantity
 
-let incr =(id)=> {
+let incr = (id) => {
 
   let selected_item = id;
 
   //search function to find the item and increasing the item
 
-  let search = basket.find((x)=>x.id === id);
-  
+  let search = basket.find((x) => x.id === id);
 
-  if(search=== undefined){
 
-    basket.push ({
+  if (search === undefined) {
+
+    basket.push({
       id: id,
       item: 1,
     });
 
   }
 
-  else{
+  else {
     search.item += 1;
   }
 
   //local storage
 
-  
 
 
 
+  generateCartitems();
   update(id);
 
-  localStorage.setItem("data",JSON.stringify(basket));
-  
-  
-
 
   
+
+  localStorage.setItem("data", JSON.stringify(basket));
+
+
+
+
+
 };
 
 
 //dec func
 
 
-let decr = (id)=> {
+let decr = (id) => {
   let selected_item = id;
 
   //search function to find the item and decr the item
 
-  let search = basket.find((x)=>x.id === id);
+  let search = basket.find((x) => x.id === id);
 
-  if (search ===  undefined) return;
+  if (search === undefined) return;
 
-  else if(search.item === 0) return;
+  else if (search.item === 0) return;
 
-  else{
+  else {
     search.item -= 1;
 
-  
-   
+
+
 
     update(id);
-    basket = basket.filter((x)=> x.item !== 0);
 
-    
 
-  
-    localStorage.setItem("data",JSON.stringify(basket));
-    
+    localStorage.setItem("data", JSON.stringify(basket));
+
   }
- 
- }
+
+}
 
 
 
-  //update func
+//update func
 
-let update = (id)=> {
+let update = (id) => {
 
-  let search = basket.find((x)=> x.id === id);
+  let search = basket.find((x) => x.id === id);
   console.log(search.item);
-  
+
   document.getElementById(id).innerHTML = search.item;
-  
-  claculation()
-  
-   
-   };
+
+  claculation();
+  TotalAmt();
+
+
+};
+
+
+//remove the item
+
+
+let dlt_item = (id) => {
+
+  let selected_item = id;
+
+  basket = basket.filter((x) => x.id !== selected_item.id);
+  generateCartitems();
+  TotalAmt();
+  claculation();
+  localStorage.setItem("data", JSON.stringify(basket));
+
+};
+
+
+//To clear the cart
+
+let ClearCart =()=>{
+  basket = []
+  generateCartitems();
+  claculation();
+  localStorage.setItem("data", JSON.stringify(basket));
+
+}
+
+
+
+//Total Amount
+
+
+let TotalAmt =()=>{
+  if(basket.length !== 0){
+    let amount = basket.map((x)=>{
+      let {id,item} = x;
+
+      let search = cart_items.find((y) => y.id === id) || [];
+
+      return item * search.Price;
+      
+
+    }).reduce((x,y)=> x+y, 0);
+
+    label.innerHTML = `
+    
+
+    <h2> Total Bill: ${amount} </h2>
+
+    <button onclick = "checkout()" class = "checkout"> checkOut </button>
+    <button onclick = "ClearCart()" class = "Remove">ClearCart</button>
+    
+    `
+    
+
+  } else return
+}
+
+TotalAmt();
+
+
+//checkout function
+
+
+let checkout =()=>{
+  alert("your Pizza is on you way");
+}
+
