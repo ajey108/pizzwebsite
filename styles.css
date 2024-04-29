@@ -312,6 +312,18 @@ header {
     text-align: center;
 }
 
+
+
+/* cart elements */
+
+
+.cartelements {
+    margin-top: 70px;
+    text-align: center;
+}
+
+
+
 @media (max-width: 921px) {
     header {
         padding: 14px 41px;
@@ -401,3 +413,7 @@ header {
     .home-text {
         padding-top: 4rem;
     }
+
+
+
+    
